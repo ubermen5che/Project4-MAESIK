@@ -1,5 +1,6 @@
 package MAESIK.demo.service;
 
+import MAESIK.demo.domain.Group;
 import MAESIK.demo.domain.Member;
 import MAESIK.demo.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,9 @@ public class MemberService {
     }
     public Optional<Member> findById(Long id) {
         return memberRepository.findById(id);
+    }
+
+    public Optional<Member> findByOauthId(String oauthId) {
+        return memberRepository.findByOauthId(oauthId);
     }
 }
