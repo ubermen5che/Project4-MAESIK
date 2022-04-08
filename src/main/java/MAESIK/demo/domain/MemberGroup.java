@@ -1,9 +1,12 @@
 package MAESIK.demo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,4 +24,7 @@ public class MemberGroup implements Serializable {
     @JoinColumn(name = "group_id")
     private Group group;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_group_id")
+    private List<MemberGroupRepoUrl> memberGroupRepoUrlList = new ArrayList<>();
 }
