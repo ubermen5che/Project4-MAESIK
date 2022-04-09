@@ -10,24 +10,8 @@ public enum OAuthAttributes {
                 String.valueOf(attributes.get("id")),
                 (String) attributes.get("name"),
                 (String) attributes.get("email"),
-                (String) attributes.get("avatar_url")
-        );
-    }),
-    GOOGLE("google", (attributes) -> {
-        return new UserProfile(
-                String.valueOf(attributes.get("sub")),
-                (String) attributes.get("name"),
-                (String) attributes.get("email"),
-                (String) attributes.get("picture")
-        );
-    }),
-    NAVER("naver", (attributes) -> {
-        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
-        return new UserProfile(
-                (String) response.get("id"),
-                (String) response.get("name"),
-                (String) response.get("email"),
-                (String) response.get("profile_image")
+                (String) attributes.get("avatar_url"),
+                (String) attributes.get("login")
         );
     });
 

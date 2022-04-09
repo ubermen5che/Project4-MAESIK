@@ -20,6 +20,7 @@ public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
+    private String githubId;
     private String oauthId;
     private String name;
     private String email;
@@ -36,12 +37,13 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public Member(String oauthId, String name, String email, String imageUrl, Role user) {
+    public Member(String oauthId, String name, String email, String imageUrl, Role user, String githubId) {
         this.oauthId = oauthId;
         this.name = name;
         this.email = email;
         this.imageUrl = imageUrl;
         this.role = user;
+        this.githubId = githubId;
     }
 
     public Member(String oauthId, Role role) {
@@ -49,10 +51,11 @@ public class Member {
         this.role = role;
     }
 
-    public Member update(String name, String email, String imageUrl) {
+    public Member update(String name, String email, String imageUrl, String githubId) {
         this.name = name;
         this.email = email;
         this.imageUrl = imageUrl;
+        this.githubId = githubId;
         return this;
     }
 
