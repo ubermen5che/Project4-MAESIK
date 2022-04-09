@@ -14,6 +14,7 @@ public class GroupRequestDTO {
 
     private String groupName;
     private String repoUrl;
+    private String updateUrl;
     private Long groupId;
 
     @Builder
