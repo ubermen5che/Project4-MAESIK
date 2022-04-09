@@ -87,7 +87,6 @@ public class TokenService {
 
     public Authentication getAuthentication(String accessToken) {
         // 토큰 복호화
-        System.out.println("accessToken : " + accessToken);
         Claims claims = parseClaims(accessToken);
 
         if (claims.get(AUTHORITIES_KEY) == null) {
