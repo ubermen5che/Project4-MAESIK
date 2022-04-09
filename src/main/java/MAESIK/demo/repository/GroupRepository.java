@@ -1,7 +1,6 @@
 package MAESIK.demo.repository;
 
 import MAESIK.demo.domain.Group;
-import MAESIK.demo.domain.Member;
 import MAESIK.demo.domain.dto.GroupResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +21,5 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
             " join mg.group g" +
             " where m.oauthId like %:memberId%")
     List<GroupResponseDTO> findGroupDTOs(@Param("memberId") String memberId);
+    void deleteById(Long id);
 }
