@@ -3,6 +3,7 @@ package MAESIK.demo.config;
 import MAESIK.demo.jwt.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +68,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     filterChain.doFilter(request, response);
                 }
             } catch (ExpiredJwtException | io.jsonwebtoken.security.SecurityException |
-                    UnsupportedJwtException | IllegalArgumentException e) {
+                    UnsupportedJwtException | IllegalArgumentException | MalformedJwtException e) {
                 log.error("Fail Decode Authorization Token");
 
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());

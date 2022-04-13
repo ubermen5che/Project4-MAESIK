@@ -17,7 +17,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/reissue")
-    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDTO tokenRequestDto) {
-        return ResponseEntity.ok(authService.reissue(tokenRequestDto));
+    public ResponseEntity<?> reissue(@RequestBody TokenRequestDTO tokenRequestDto) {
+        try {
+            TokenDto tokenDto = authService.reissue(tokenRequestDto);
+            return ResponseEntity.ok(tokenDto);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
