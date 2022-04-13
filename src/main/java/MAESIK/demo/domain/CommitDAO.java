@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.sql.Date;
+import java.time.LocalDate;
 
 
 @Getter
@@ -24,7 +25,7 @@ public class CommitDAO {
     private String url;
     private String name;
     private String email;
-    private Date date;
+    private Long date;
     private String message;
     private String commitUrl;
 }
