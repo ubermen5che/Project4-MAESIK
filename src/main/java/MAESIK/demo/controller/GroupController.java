@@ -161,4 +161,26 @@ public class GroupController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/group/info")
+    public ResponseEntity<GroupResponseDTO> getGroupInfo(Long groupId, Authentication authentication) {
+        Optional<Member> member = memberService.findByOauthId(authentication.getName());
+
+        List<MemberGroup> memberGroupList = member.get().getMemberGroupList();
+
+        for (MemberGroup memberGroup : memberGroupList) {
+            if (memberGroup.getGroup().getId() == groupId) {
+                Group group = memberGroup.getGroup();
+                return ResponseEntity.ok().body(GroupResponseDTO.builder()
+                        .groupId(group.getId())
+                        .groupMasterId(group.getGroupMasterId())
+                        .groupName(group.getGroupName())
+                        .groupTier(group.getGroupTier())
+                        .groupExp(group.getGroupExp())
+                        .build());
+            }
+        }
+
+        return ResponseEntity.noContent().build();
+    }
 }
