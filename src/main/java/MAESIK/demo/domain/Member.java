@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -65,5 +64,13 @@ public class Member {
 
     public String getOauthId() {
         return oauthId;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updateEmailAuth(boolean emailAuth) {
+        this.emailAuth = emailAuth;
     }
 }
