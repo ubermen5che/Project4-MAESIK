@@ -1,7 +1,5 @@
 package MAESIK.demo.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,14 +9,28 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @Table(name = "members")
 @ToString
 public class Member {
 
+    public Member(Long id, String githubId, String oauthId, String name, String email, String imageUrl, String repoUrl, Integer memberExp, String tier, Boolean emailAuth, List<MemberGroup> memberGroupList, Role role) {
+        this.id = id;
+        this.githubId = githubId;
+        this.oauthId = oauthId;
+        this.name = name;
+        this.email = email;
+        this.imageUrl = imageUrl;
+        this.repoUrl = repoUrl;
+        this.memberExp = memberExp;
+        this.tier = tier;
+        this.emailAuth = emailAuth;
+        this.memberGroupList = memberGroupList;
+        this.role = role;
+    }
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;
+    private Long id;
     private String githubId;
     private String oauthId;
     private String name;
@@ -29,7 +41,7 @@ public class Member {
     private String tier;
     private Boolean emailAuth;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
     private List<MemberGroup> memberGroupList = new ArrayList<>();
 
