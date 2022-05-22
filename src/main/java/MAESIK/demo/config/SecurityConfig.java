@@ -1,51 +1,91 @@
 package MAESIK.demo.config;
 
 import MAESIK.demo.jwt.TokenService;
+import MAESIK.demo.security.RestAuthenticationEntryPoint;
+import MAESIK.demo.security.TokenAuthenticationFilter;
+import MAESIK.demo.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import MAESIK.demo.security.oauth2.OAuth2AuthenticationFailureHandler;
+import MAESIK.demo.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import MAESIK.demo.security.user.CustomOAuth2UserService;
 import MAESIK.demo.service.OAuthService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @EnableWebSecurity // spring security 설정을 활성화시켜주는 어노테이션
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    public SecurityConfig(OAuthService oAuthService, OAuth2SuccessHandler successHandler, TokenService tokenService) {
-        this.oAuthService = oAuthService;
-        this.successHandler = successHandler;
-        this.tokenService = tokenService;
+    private final OAuthService oAuthService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    @Bean
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+        return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
-    private final OAuthService oAuthService;
-    private final OAuth2SuccessHandler successHandler;
-    private final TokenService tokenService;
+    @Bean
+    public TokenAuthenticationFilter tokenAuthenticationFilter() {
+        return new TokenAuthenticationFilter();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .exceptionHandling()
+        http
+                .cors()
                 .and()
-
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-
+                .csrf()
+                .disable()
+                .formLogin()
+                .disable()
+                .httpBasic()
+                .disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .and()
                 .authorizeRequests()
-                .antMatchers("/auth/**", "/index.html", "/login", "/oauth2", "/confirm-email").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/",
+                        "/error",
+                        "/favicon.ico",
+                        "/**/*.png",
+                        "/**/*.gif",
+                        "/**/*.svg",
+                        "/**/*.jpg",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js")
+                .permitAll()
+                .antMatchers("/auth/**", "/oauth2/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
                 .and()
-
-                .apply(new JwtSecurityConfig(tokenService))
+                .oauth2Login()
+                .authorizationEndpoint()
+                .baseUri("/oauth2/authorize")
+                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                 .and()
+                .redirectionEndpoint()
+                .baseUri("/oauth2/callback/*")
+                .and()
+                .userInfoEndpoint()
+                .userService(oAuthService)
+                .and()
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler);
 
-                .oauth2Login() // OAuth2 로그인 설정 시작점
-                .successHandler(successHandler)
-                .userInfoEndpoint() // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때 설정 담당
-                .userService(oAuthService); // OAuth2 로그인 성공 시, 후작업을 진행할 UserService 인터페이스 구현체 등록
-
+        // Add our custom Token based authentication filter
+        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
 
