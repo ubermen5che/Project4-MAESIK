@@ -32,11 +32,26 @@ import java.util.Map;
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
+    public static final String[] excludeURIArr = new String[] {"/oauth2", "/confirm-email", "/group/accept/", "/login", "/api"};
 
     @Autowired
     private TokenService tokenService;
 
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        Boolean flag = false;
+        String path = request.getRequestURI();
+
+        for (String URI : excludeURIArr) {
+            if (path.indexOf(URI) > -1) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

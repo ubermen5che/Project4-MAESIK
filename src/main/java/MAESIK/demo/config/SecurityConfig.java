@@ -1,12 +1,10 @@
 package MAESIK.demo.config;
 
-import MAESIK.demo.jwt.TokenService;
 import MAESIK.demo.security.RestAuthenticationEntryPoint;
 import MAESIK.demo.security.TokenAuthenticationFilter;
 import MAESIK.demo.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import MAESIK.demo.security.oauth2.OAuth2AuthenticationFailureHandler;
 import MAESIK.demo.security.oauth2.OAuth2AuthenticationSuccessHandler;
-import MAESIK.demo.security.user.CustomOAuth2UserService;
 import MAESIK.demo.service.OAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -25,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuthService oAuthService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-    private final CustomOAuth2UserService customOAuth2UserService;
+
     @Bean
     public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
@@ -63,7 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.jpg",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js")
+                        "/**/*.js",
+                        "/confirm-email")
                 .permitAll()
                 .antMatchers("/auth/**", "/oauth2/**")
                 .permitAll()
