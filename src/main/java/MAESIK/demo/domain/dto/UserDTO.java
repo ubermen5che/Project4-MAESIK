@@ -6,15 +6,15 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class UserDto {
+public class UserDTO {
     private String oauthId;
     private String name;
-    private String picture;
+    private String imageUrl;
 
     @Builder
-    public UserDto(String oauthId, String name, String picture) {
+    public UserDTO(String oauthId, String name, String imageUrl) {
         this.oauthId = oauthId;
         this.name = name;
-        this.picture = picture;
+        this.imageUrl = imageUrl;
     }
 }

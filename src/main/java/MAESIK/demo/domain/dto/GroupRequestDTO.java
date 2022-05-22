@@ -7,6 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,6 +21,7 @@ public class GroupRequestDTO {
     private String repoUrl;
     private String updateUrl;
     private Long groupId;
+    private List<String> invitedMemberList;
 
     @Builder
     public GroupRequestDTO(String groupName) {
