@@ -1,6 +1,7 @@
 package MAESIK.demo.service;
 
 import MAESIK.demo.domain.ConfirmationToken;
+import MAESIK.demo.domain.MailInfo;
 import MAESIK.demo.repository.ConfirmationTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -19,7 +20,7 @@ public class ConfirmationTokenService {
      * 이메일 인증 토큰 생성
      * @return
      */
-    public String createEmailConfirmationToken(String userId, String receiverEmail){
+    public String createEmailConfirmationToken(String userId, String receiverEmail, SimpleMailMessage mailMessage, MailInfo mailInfo){
 
         Assert.hasText(userId,"userId는 필수 입니다.");
         Assert.hasText(receiverEmail,"receiverEmail은 필수 입니다.");
@@ -27,12 +28,13 @@ public class ConfirmationTokenService {
         ConfirmationToken emailConfirmationToken = ConfirmationToken.createEmailConfirmationToken(userId);
         confirmationTokenRepository.save(emailConfirmationToken);
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(receiverEmail);
-        mailMessage.setSubject("회원가입 이메일 인증");
-        mailMessage.setText("http://localhost:8080/confirm-email?token="+emailConfirmationToken.getId());
-        emailSenderService.sendEmail(mailMessage);
+        if (mailInfo.getMailType().equals("emailAuth")) {
+            mailMessage.setText("http://localhost:8080/confirm-email?token="+emailConfirmationToken.getId());
+        } else if (mailInfo.getMailType().equals("inviteAuth")) {
+            mailMessage.setText("http://localhost:8080/group/accept/"+emailConfirmationToken.getId()+"/"+mailInfo.getGroupId());
+        }
 
+        emailSenderService.sendEmail(mailMessage);
         return emailConfirmationToken.getId();
     }
 
