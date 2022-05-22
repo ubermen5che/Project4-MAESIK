@@ -1,5 +1,6 @@
 package MAESIK.demo.controller;
 
+import MAESIK.demo.domain.MailInfo;
 import MAESIK.demo.domain.Member;
 import MAESIK.demo.jwt.TokenService;
 import MAESIK.demo.service.ConfirmationTokenService;
@@ -7,16 +8,13 @@ import MAESIK.demo.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -33,18 +31,13 @@ public class MemberController {
         this.tokenService = tokenService;
     }
 
-
+    // Proxy 객체 바인딩 오류 해결 필요.
     @GetMapping("/members")
     public ResponseEntity<?> members() {
 
         List<Member> memberList = memberService.findAllMember();
 
         return ResponseEntity.ok(memberList);
-    }
-
-    @GetMapping("/auth/login")
-    public RedirectView login() {
-        return new RedirectView("/index.html");
     }
 
     @GetMapping("confirm-email")
@@ -54,8 +47,8 @@ public class MemberController {
         return new RedirectView("/login");
     }
 
-    @GetMapping("/auth/email")
-    public ResponseEntity<?> emailAuth(String email, Authentication authentication) {
+    @GetMapping("/auth/email/{email}")
+    public ResponseEntity<?> emailAuth(@PathVariable String email, Authentication authentication) {
         Optional<Member> member = memberService.findByOauthId(authentication.getName());
 
         if (member.isEmpty()) {
@@ -66,7 +59,15 @@ public class MemberController {
         memberService.save(member.get());
         String tokenId = null;
 
-        tokenId = confirmationTokenService.createEmailConfirmationToken(authentication.getName(), email);
+        SimpleMailMessage simpleEmail = new SimpleMailMessage();
+        simpleEmail.setTo(member.get().getEmail());
+        simpleEmail.setSubject("회원가입 이메일 인증");
+
+        MailInfo mailInfo = MailInfo.builder()
+                .mailType("emailAuth")
+                .build();
+
+        tokenId = confirmationTokenService.createEmailConfirmationToken(authentication.getName(), member.get().getEmail(), simpleEmail, mailInfo);
 
         if (tokenId != null)
             return ResponseEntity.status(HttpStatus.OK).body("이메일 발송 완료.");

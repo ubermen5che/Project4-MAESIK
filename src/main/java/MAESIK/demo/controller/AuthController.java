@@ -1,14 +1,11 @@
 package MAESIK.demo.controller;
 
-import MAESIK.demo.domain.dto.TokenDto;
+import MAESIK.demo.domain.dto.TokenDTO;
 import MAESIK.demo.domain.dto.TokenRequestDTO;
 import MAESIK.demo.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -19,10 +16,15 @@ public class AuthController {
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(@RequestBody TokenRequestDTO tokenRequestDto) {
         try {
-            TokenDto tokenDto = authService.reissue(tokenRequestDto);
+            TokenDTO tokenDto = authService.reissue(tokenRequestDto);
             return ResponseEntity.ok(tokenDto);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/hello")
+    public ResponseEntity<?> hello() {
+        return ResponseEntity.ok().body("hello");
     }
 }
