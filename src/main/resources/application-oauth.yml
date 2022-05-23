@@ -4,9 +4,12 @@ spring:
       client:
         registration:
           github:
-            client-id:
-            client-secret:
-            scope: name,email,avatar_url
+            client-id: # 깃헙에서 발급 받은 id입력
+            client-secret: #깃헙에서 발급 받은 pw입력
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - name
+              - avatar_url
           google:
             client-id: 54767115914-gcla0mork6h3156h4qcutjerm0mdf4fu.apps.googleusercontent.com
             client-secret: 비밀키
