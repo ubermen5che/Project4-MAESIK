@@ -1,6 +1,6 @@
 package MAESIK.demo.jwt;
 
-import MAESIK.demo.domain.dto.TokenDto;
+import MAESIK.demo.domain.dto.TokenDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -35,7 +35,7 @@ public class TokenService {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenDto generateToken(Authentication authentication) {
+    public TokenDTO generateToken(Authentication authentication) {
 
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -56,7 +56,9 @@ public class TokenService {
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
 
-        return TokenDto.builder()
+        System.out.println(accessToken);
+
+        return TokenDTO.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
@@ -88,7 +90,7 @@ public class TokenService {
     }
 
 
-    public Authentication getAuthentication(String accessToken) {
+    public UsernamePasswordAuthenticationToken getAuthentication(String accessToken) {
         // 토큰 복호화
         Claims claims = parseClaims(accessToken);
 
@@ -116,7 +118,7 @@ public class TokenService {
         }
     }
 
-    public TokenDto generateTokenDto(Authentication authentication) {
+    public TokenDTO generateTokenDto(Authentication authentication) {
         // 권한들 가져오기
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -139,7 +141,7 @@ public class TokenService {
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
 
-        return TokenDto.builder()
+        return TokenDTO.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
