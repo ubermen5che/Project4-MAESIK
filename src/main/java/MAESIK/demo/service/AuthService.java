@@ -1,7 +1,7 @@
 package MAESIK.demo.service;
 
 import MAESIK.demo.domain.RefreshToken;
-import MAESIK.demo.domain.dto.TokenDto;
+import MAESIK.demo.domain.dto.TokenDTO;
 import MAESIK.demo.domain.dto.TokenRequestDTO;
 import MAESIK.demo.jwt.TokenService;
 import MAESIK.demo.repository.RefreshTokenRepository;
@@ -23,7 +23,7 @@ public class AuthService {
     private final TokenService tokenService;
 
     @Transactional
-    public TokenDto reissue(TokenRequestDTO tokenRequestDto) {
+    public TokenDTO reissue(TokenRequestDTO tokenRequestDto) {
         // 1. Refresh Token 검증
         if (!tokenService.verifyToken(tokenRequestDto.getRefreshToken())) {
             throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
@@ -42,7 +42,7 @@ public class AuthService {
         }
 
         // 5. 새로운 토큰 생성
-        TokenDto tokenDto = tokenService.generateTokenDto(authentication);
+        TokenDTO tokenDto = tokenService.generateTokenDto(authentication);
 
         // 6. 저장소 정보 업데이트
         RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
