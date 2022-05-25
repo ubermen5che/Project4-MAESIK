@@ -29,7 +29,7 @@ public class ConfirmationTokenService {
         confirmationTokenRepository.save(emailConfirmationToken);
 
         if (mailInfo.getMailType().equals("emailAuth")) {
-            mailMessage.setText("http://localhost:8080/confirm-email?token="+emailConfirmationToken.getId());
+            mailMessage.setText("http://localhost:8080/email/"+emailConfirmationToken.getId());
         } else if (mailInfo.getMailType().equals("inviteAuth")) {
             mailMessage.setText("http://localhost:8080/group/accept/"+emailConfirmationToken.getId()+"/"+mailInfo.getGroupId());
         }
