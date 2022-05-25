@@ -13,13 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "member_group_repo_urls")
 public class MemberGroupRepoUrl {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MEMBER_GROUP_REPO_ID")
     private Long memberGroupRepoId;
     private String repo;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "member_group_repo_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "memberGroupRepoUrls")
     private List<CommitDAO> commitEachRepo = new ArrayList<>();
 }
