@@ -39,7 +39,7 @@ public class Member {
     private String repoUrl;
     private Integer memberExp;
     private String tier;
-    private Boolean emailAuth;
+    private Boolean emailAuth = false;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
