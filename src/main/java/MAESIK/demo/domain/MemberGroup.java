@@ -1,6 +1,5 @@
 package MAESIK.demo.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,6 +17,10 @@ public class MemberGroup implements Serializable {
 
     @Id @GeneratedValue
     private Long memberGroupId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
