@@ -6,9 +6,7 @@ import MAESIK.demo.repository.CommitRepository;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
@@ -39,7 +37,6 @@ public class CommitService {
                 .bodyToFlux(CommitDTO.class);
 
         List<MemberGroup> memberGroupList = member.getMemberGroupList();
-        Optional<CommitDAO> maxTimeCommitDAO = commitRepository.findDistinctTopByOrderByDateDesc();
 
         for (MemberGroup memberGroup : memberGroupList) {
             Group group = memberGroup.getGroup();
@@ -54,14 +51,17 @@ public class CommitService {
                             DateTime dt = new DateTime(x.getCommit().getAuthor().getDate(), zone);
                             dateTime.set(dt);
                             long millisecondsSinceUnixEpoch = dateTime.get().getMillis();
-                            if (maxTimeCommitDAO.isEmpty() || maxTimeCommitDAO.get().getDate() < millisecondsSinceUnixEpoch) {
+                            Optional<CommitDAO> maxTimeCommitDAO = commitRepository.findDistinctTopByMemberGroupRepoIdOrderByCommitDateDesc(mgr.getMemberGroupRepoId());
+                            if (maxTimeCommitDAO.isEmpty() || maxTimeCommitDAO.get().getCommitDate() < millisecondsSinceUnixEpoch) {
                                 CommitDAO commitDAO = CommitDAO.builder()
                                         .sha(x.getSha())
+                                        .name(x.getCommit().getAuthor().getName())
                                         .url(x.getUrl())
                                         .commitUrl(x.getCommit().getUrl())
-                                        .date(millisecondsSinceUnixEpoch)
+                                        .commitDate(millisecondsSinceUnixEpoch)
                                         .email(x.getCommit().getAuthor().getEmail())
                                         .message(x.getCommit().getMessage())
+                                        .memberGroupRepoId(mgr.getMemberGroupRepoId())
                                         .build();
                                 commitDAOS.add(commitDAO);
                             }
