@@ -1,33 +1,29 @@
 package MAESIK.demo.controller;
 
 import MAESIK.demo.domain.*;
-import MAESIK.demo.domain.dto.GroupRequestDTO;
-import MAESIK.demo.domain.dto.GroupResponseDTO;
-import MAESIK.demo.domain.dto.InviteDTO;
-import MAESIK.demo.domain.dto.MemberRequestDTO;
+import MAESIK.demo.domain.dto.*;
+import MAESIK.demo.repository.CommitRepository;
 import MAESIK.demo.repository.GroupRepository;
 import MAESIK.demo.repository.MemberGroupRepository;
+import MAESIK.demo.repository.MemberRepository;
 import MAESIK.demo.service.ConfirmationTokenService;
 import MAESIK.demo.service.EmailSenderService;
 import MAESIK.demo.service.GroupService;
 import MAESIK.demo.service.MemberService;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +50,12 @@ public class GroupController {
     @Autowired
     GroupRepository groupRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    CommitRepository commitRepository;
+
     @PostMapping("/group")
     public ResponseEntity<List<GroupResponseDTO>> findGroups(@RequestBody MemberRequestDTO memberRequestDTO, Authentication authentication) {
 
@@ -64,6 +66,68 @@ public class GroupController {
         return ResponseEntity.ok().body(listGroup);
     }
 
+    @GetMapping("/get-user-commit-data")
+    public ResponseEntity<?> getUserCommitData() {
+        List<AllUserCommitDataDTO> allUserCommitDataDTOS = new ArrayList<>();
+        List<MemberGroup> memberGroupList = memberGroupRepository.findAll();
+        DateTimeZone zone = DateTimeZone.forID("Asia/Seoul"); // Or DateTimeZone.UTC
+        DateTime nowDt = new DateTime(DateTime.now(), zone);
+
+        long currentMillis = nowDt.getMillis();
+        Long beforeOneDay = currentMillis - 3600L * 24L * 1000L;
+
+        for (MemberGroup memberGroup : memberGroupList) {
+            List<MemberGroupRepoUrl> memberGroupRepoUrlList = memberGroup.getMemberGroupRepoUrlList();
+            for (MemberGroupRepoUrl memberGroupRepoUrl : memberGroupRepoUrlList) {
+                List<CommitDAO> commitDAOS = commitRepository.findByMemberGroupRepoIdAndCommitDateGreaterThanOrderByCommitDateDesc(memberGroupRepoUrl.getMemberGroupRepoId(), beforeOneDay);
+                allUserCommitDataDTOS.add(AllUserCommitDataDTO.builder()
+                        .oAuthId(memberGroup.getMember().getOauthId())
+                        .commitDAOS(commitDAOS)
+                        .build());
+            }
+        }
+
+        if (allUserCommitDataDTOS.isEmpty()) {
+            return ResponseEntity.ok().body("User commit data is empty");
+        } else {
+            return ResponseEntity.ok().body(allUserCommitDataDTOS);
+        }
+    }
+
+    @GetMapping("/group/{id}/statistics")
+    public ResponseEntity<?> sendGroupStatistics(@PathVariable Long id, Authentication authentication) {
+        // groupId 기반으로 그룹에 속한 모든 멤버 리스트를 가져온다.
+        List<GroupStatisticsDTO> response = new ArrayList<>();
+        List<MemberGroup> memberGroupList = memberGroupRepository.findByGroup_Id(id);
+
+        // 그룹에 속해 있는 멤버들의 각 repo의 커밋정보를 읽어들인 후
+        // GroupStatisticsDTO에 유저명, 커밋갯수를 맵핑하여 List로 만든 후 response한다.
+        for (MemberGroup mg : memberGroupList) {
+            GroupStatisticsDTO groupStatisticsDTO = new GroupStatisticsDTO();
+            List<MemberGroupRepoUrl> memberGroupRepoUrlList = mg.getMemberGroupRepoUrlList();
+            String githubName = "";
+            int commitCnt = 0;
+            for (MemberGroupRepoUrl mgr : memberGroupRepoUrlList) {
+                List<CommitDAO> commitDAOList = commitRepository.findByMemberGroupRepoId(mgr.getMemberGroupRepoId());
+                if (commitDAOList.isEmpty()) {
+                    continue;
+                } else {
+                    githubName = commitDAOList.get(0).getName();
+                    commitCnt = commitDAOList.size();   //추후 커밋 반영 시간 고려해서 커밋 갯수 계산해야함.
+                    break; // mgr은 우선 하나만 있다고 가정
+                }
+            }
+            groupStatisticsDTO.setUsername(githubName);
+            groupStatisticsDTO.setNumOfCommit(commitCnt);
+            response.add(groupStatisticsDTO);
+        }
+
+        if (response.isEmpty()) {
+            return ResponseEntity.ok().body("Not exist Data");
+        } else {
+            return ResponseEntity.ok().body(response);
+        }
+    }
     @PostMapping("/group/create")
     public ResponseEntity<?> create(@Valid @RequestBody GroupRequestDTO groupRequestDTO, Authentication authentication) throws URISyntaxException {
 
