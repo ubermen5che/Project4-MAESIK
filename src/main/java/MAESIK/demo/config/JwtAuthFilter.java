@@ -30,7 +30,7 @@ import java.util.Map;
 public class JwtAuthFilter extends OncePerRequestFilter {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
-    public static final String[] excludeURIArr = new String[] {"/static/index.html", "/oauth2", "/email", "/group/accept/", "/login", "/api", "/get-user-commit-data"};
+    public static final String[] excludeURIArr = new String[] {"/static/index.html", "/oauth2", "/email", "/group/accept/", "/login", "/api", "/get-user-commit-data", "/auth/reissue"};
 
     @Autowired
     private final TokenService tokenService;
