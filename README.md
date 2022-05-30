@@ -13,6 +13,114 @@
 
 <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">
 
+## 프로젝트 구조
+
+```
+.
+├── main
+│   ├── java
+│   │   └── MAESIK
+│   │       └── demo
+│   │           ├── DemoApplication.java
+│   │           ├── batch
+│   │           │   └── MailBatch.java
+│   │           ├── config
+│   │           │   ├── AppProperties.java
+│   │           │   ├── JwtAuthFilter.java
+│   │           │   ├── JwtSecurityConfig.java
+│   │           │   ├── SecurityConfig.java
+│   │           │   ├── UserRequestMapper.java
+│   │           │   └── WebMvcConfig.java
+│   │           ├── controller
+│   │           │   ├── AuthController.java
+│   │           │   ├── CommitController.java
+│   │           │   ├── GroupController.java
+│   │           │   ├── MemberController.java
+│   │           │   └── UserController.java
+│   │           ├── domain
+│   │           │   ├── Commit.java
+│   │           │   ├── CommitDAO.java
+│   │           │   ├── ConfirmationToken.java
+│   │           │   ├── Group.java
+│   │           │   ├── MailInfo.java
+│   │           │   ├── Member.java
+│   │           │   ├── MemberGroup.java
+│   │           │   ├── MemberGroupRepoUrl.java
+│   │           │   ├── OAuthAttributes.java
+│   │           │   ├── RefreshToken.java
+│   │           │   ├── Role.java
+│   │           │   ├── UserProfile.java
+│   │           │   └── dto
+│   │           │       ├── AllUserCommitDataDTO.java
+│   │           │       ├── Author.java
+│   │           │       ├── CommitDTO.java
+│   │           │       ├── GroupRequestDTO.java
+│   │           │       ├── GroupResponseDTO.java
+│   │           │       ├── GroupStatisticsDTO.java
+│   │           │       ├── InviteDTO.java
+│   │           │       ├── MemberRequestDTO.java
+│   │           │       ├── TokenDTO.java
+│   │           │       ├── TokenRequestDTO.java
+│   │           │       └── UserDTO.java
+│   │           ├── exception
+│   │           │   ├── BadRequestException.java
+│   │           │   ├── OAuth2AuthenticationProcessingException.java
+│   │           │   └── ResourceNotFoundException.java
+│   │           ├── jwt
+│   │           │   ├── Token.java
+│   │           │   └── TokenService.java
+│   │           ├── repository
+│   │           │   ├── CommitRepository.java
+│   │           │   ├── ConfirmationTokenRepository.java
+│   │           │   ├── GroupRepository.java
+│   │           │   ├── MemberGroupRepository.java
+│   │           │   ├── MemberRepository.java
+│   │           │   └── RefreshTokenRepository.java
+│   │           ├── security
+│   │           │   ├── RestAuthenticationEntryPoint.java
+│   │           │   ├── TokenAuthenticationFilter.java
+│   │           │   └── oauth2
+│   │           │       ├── HttpCookieOAuth2AuthorizationRequestRepository.java
+│   │           │       ├── OAuth2AuthenticationFailureHandler.java
+│   │           │       └── OAuth2AuthenticationSuccessHandler.java
+│   │           ├── service
+│   │           │   ├── AuthService.java
+│   │           │   ├── CommitService.java
+│   │           │   ├── ConfirmationTokenService.java
+│   │           │   ├── EmailSenderService.java
+│   │           │   ├── GroupService.java
+│   │           │   ├── MemberService.java
+│   │           │   └── OAuthService.java
+│   │           └── util
+│   │               └── CookieUtils.java
+│   └── resources
+│       ├── application-oauth.yml
+│       ├── application.yml
+│       ├── index.html
+│       ├── react
+│       │   └── static
+│       │       ├── css
+│       │       │   ├── main.9326779e.css
+│       │       │   └── main.9326779e.css.map
+│       │       ├── js
+│       │       │   ├── main.c29a0e52.js
+│       │       │   ├── main.c29a0e52.js.LICENSE.txt
+│       │       │   └── main.c29a0e52.js.map
+│       │       └── media
+│       │           └── google-logo.d74131b9cd3ee4fff4ca.png
+│       └── templates
+└── test
+    └── java
+        └── MAESIK
+            └── demo
+                ├── DemoApplicationTests.java
+                ├── service
+                │   ├── GroupServiceTest.java
+                │   └── MemberServiceTest.java
+                └── util
+                    └── DateFormatTest.java
+```
+
 ## ✔️개발 현황
 
 - Spring Security + Oauth2.0 +JWT를 이용한 소셜 로그인 구현
