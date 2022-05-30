@@ -1,13 +1,9 @@
 # Project-4 - 매일이 식목일(Back-End) 🪴
 
----
-
 ## 💁‍♂️팀원 소개
 | [<img src="https://github.com/ubermen5che.png" width="100px">](https://github.com/ubermen5che) | [<img src="https://github.com/Kimngeunhye.png" width="100px">](https://github.com/Kimngeunhye) |
 | :--------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: |
 |                          [권용준](https://github.com/ubermen5che)                           |                            [김은혜](https://github.com/Kimngeunhye)                             |
-
----
 
 ## 🔧기술 스택
 
@@ -16,8 +12,6 @@
 <img src="https://img.shields.io/badge/SpringSecurity-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white">
 
 <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">
-
----
 
 ## ✔️개발 현황
 
@@ -28,13 +22,10 @@
 - Spring Data JPA + JPQL을 이용한 CRUD 구현
 - AWS EC2를 이용해 React 연동 후 배포
 
----
-
 ## 📃REST API Spec
 
 **[링크](https://www.notion.so/e458beafc112498f9d7f7a6e27f78089)**
 
----
 
 ## 🔮Backed Feature
 
@@ -42,14 +33,10 @@
 - github와 만든 사이트가 별개로 진행되는 것이 아니기 때문에 이중으로 Repository 를 생성할 필요가 없다.
 - Frontend와 추후 연동시켜서 자신의 커밋내용을 저장하면 그룹 내 팀원들과 커밋갯수를 한 눈에 알아 볼 수 있다.
 
----
-
 ## 📍배포 서버 주소
 
 - [http://3.35.212.150:3000/](http://3.35.212.150:3000/)
 - 보여지는 프론트는 소셜 로그인 기능이 작동하는지 테스트하기 위한 임시 프론트입니다.
-
----
 
 # 개발하면서 어려웠던 점
 
@@ -65,13 +52,9 @@
 
 - 공식문서와 기본구조에 대한 블로그 글을 참고하여 기본구조에 대해 익히고 프레임워크단 코드 디버깅을 하면서 어떤 데이터가 오고가는지, flow는 어떻게 되는지 파악후 해결하였음.
 
----
-
 # 추후 개발해야할 것들
 
 - 커밋 독려 알림 서비스 기능 개발
 - 그룹 대표 이미지 등록 기능 개발
 - 리팩토링
-
----
 
